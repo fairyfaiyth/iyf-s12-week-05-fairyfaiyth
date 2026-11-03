@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3: Image Remover</title></head>
+<body>
+<button id="toggle-btn">Hide Images</button>
+<div>
+    <img src="https://picsum.photos/id/10/150" alt="Forest">
+    <img src="https://picsum.photos/id/20/150" alt="Desk">
+    <img src="https://picsum.photos/id/30/150" alt="Mug">
+</div>
+<script>
+const btn = document.getElementById("toggle-btn");
+let hidden = false;
+btn.addEventListener("click", () => {
+    hidden = !hidden;
+    document.querySelectorAll("img").forEach(img => {
+        img.style.display = hidden ? "none" : "inline";   // bonus: hide/show
+    });
+    btn.textContent = hidden ? "Show Images" : "Hide Images";
+});
+</script>
+</body></html>

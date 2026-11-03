@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4: Content Copier</title>
+<style>
+    .box { border: 1px solid #333; padding: 15px; margin: 10px 0; min-height: 50px; }
+</style></head>
+<body>
+<div id="source" class="box" draggable="true">Copy this content!</div>
+<button id="copy-btn">Copy to Target</button>
+<div id="target" class="box">Target (drop here too)</div>
+<script>
+const source = document.getElementById("source");
+const target = document.getElementById("target");
+
+document.getElementById("copy-btn").addEventListener("click", () => {
+    target.textContent = source.textContent;
+});
+
+// Bonus: drag and drop (works with mouse; touch screens may not support it)
+source.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", source.textContent));
+target.addEventListener("dragover", e => e.preventDefault());
+target.addEventListener("drop", e => {
+    e.preventDefault();
+    target.textContent = e.dataTransfer.getData("text/plain");
+});
+</script>
+</body></html>

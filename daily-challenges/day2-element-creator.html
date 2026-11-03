@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2: Dynamic Element Creator</title></head>
+<body>
+<button id="add-btn">Add Paragraph</button>
+<div id="output"></div>
+<script>
+let count = 0;
+const output = document.getElementById("output");
+document.getElementById("add-btn").addEventListener("click", () => {
+    count++;
+    const p = document.createElement("p");
+    p.textContent = `Paragraph ${count} `;
+    const del = document.createElement("button");
+    del.textContent = "Delete";
+    del.addEventListener("click", () => p.remove());
+    p.appendChild(del);
+    output.appendChild(p);
+});
+</script>
+</body></html>
