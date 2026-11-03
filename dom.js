@@ -149,3 +149,90 @@ function addNavItem(text, href) {
 
 addNavItem("Blog", "/blog");
 addNavItem("Portfolio", "/portfolio");
+
+// ===== Task 10.1: Event Listeners =====
+const button = document.createElement("button");
+button.textContent = "Click Me";
+document.body.appendChild(button);
+
+button.addEventListener("click", function () {
+    console.log("Button clicked!");
+});
+
+button.addEventListener("click", () => {
+    console.log("Clicked again!");
+});
+
+function handleClick() {
+    console.log("Handled!");
+}
+button.addEventListener("click", handleClick);
+button.removeEventListener("click", handleClick);
+
+// Event types (reference)
+// mouse: click, dblclick, mouseenter, mouseleave, mousemove
+// keyboard: keydown, keyup
+// form: submit, focus, blur, input, change
+// window: load, resize, scroll
+
+// Build: Click Counter
+const counterBox = document.createElement("div");
+const countDisplay = document.createElement("span");
+const plusBtn = document.createElement("button");
+const minusBtn = document.createElement("button");
+const resetBtn = document.createElement("button");
+let count = 0;
+
+countDisplay.textContent = count;
+plusBtn.textContent = "+";
+minusBtn.textContent = "-";
+resetBtn.textContent = "Reset";
+counterBox.append(minusBtn, " ", countDisplay, " ", plusBtn, " ", resetBtn);
+document.body.appendChild(counterBox);
+
+function updateCount(newValue) {
+    count = Math.max(0, newValue);          // never below 0
+    countDisplay.textContent = count;
+}
+
+plusBtn.addEventListener("click", () => updateCount(count + 1));
+minusBtn.addEventListener("click", () => updateCount(count - 1));
+resetBtn.addEventListener("click", () => updateCount(0));
+
+// ===== Task 10.2: The Event Object =====
+document.addEventListener("click", function (event) {
+    console.log("Target:", event.target);
+    console.log("Current Target:", event.currentTarget);
+    console.log("Type:", event.type);
+    console.log("Position:", event.clientX, event.clientY);
+    // event.preventDefault() and event.stopPropagation() are shown in the
+    // shortcuts below. Calling preventDefault() on EVERY click would
+    // block all links and buttons, so we don't do it globally.
+});
+
+document.addEventListener("keydown", function (event) {
+    console.log("Key:", event.key);
+    console.log("Code:", event.code);
+    console.log("Shift:", event.shiftKey, "Ctrl:", event.ctrlKey, "Alt:", event.altKey);
+});
+
+// Build: Keyboard Shortcuts
+document.addEventListener("keydown", function (event) {
+    // Ctrl+S: show "Saved!" and stop the browser's save dialog
+    if (event.ctrlKey && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        alert("Saved!");
+    }
+
+    // Escape: clear all form inputs
+    if (event.key === "Escape") {
+        document.querySelectorAll("form input").forEach(input => {
+            input.value = "";
+        });
+    }
+
+    // Ctrl+Enter: submit the form
+    if (event.ctrlKey && event.key === "Enter") {
+        contactForm.requestSubmit();
+    }
+});
