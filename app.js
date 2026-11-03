@@ -28,7 +28,7 @@ function createTodoElement(todo) {
 }
 
 function renderTodos() {
-    todoList.innerHTML = "";               // clear the list, then rebuild it
+    todoList.replaceChildren();
 
     const visible = todos.filter(todo => {
         if (currentFilter === "active") return !todo.completed;
