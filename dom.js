@@ -236,3 +236,147 @@ document.addEventListener("keydown", function (event) {
         contactForm.requestSubmit();
     }
 });
+
+// ===== Shared styles for the demos below =====
+const demoStyle = document.createElement("style");
+demoStyle.textContent = `
+    .completed span { text-decoration: line-through; color: gray; }
+    .error { border: 2px solid red; }
+    .error-message { color: red; font-size: 0.9em; }
+    .success-message { color: green; }
+`;
+document.head.appendChild(demoStyle);
+
+// ===== Task 10.3: Event Bubbling & Delegation =====
+// Exercise 1: bubbling (click Child -> Child, Parent, Grandparent)
+const grandparent = document.createElement("div");
+grandparent.id = "grandparent";
+grandparent.innerHTML = `Grandparent
+    <div id="parent">Parent
+        <div id="child">Child</div>
+    </div>`;
+document.body.appendChild(grandparent);
+
+grandparent.addEventListener("click", () => console.log("Grandparent clicked"));
+document.getElementById("parent").addEventListener("click", () => console.log("Parent clicked"));
+document.getElementById("child").addEventListener("click", () => console.log("Child clicked"));
+// Order: Child -> Parent -> Grandparent (bubbling)
+
+// Build: Delegated Task List (ONE listener on the ul)
+const taskSection = document.createElement("section");
+taskSection.innerHTML = `
+    <h2>Task List</h2>
+    <input type="text" id="task-input" placeholder="New task">
+    <button id="task-add-btn" type="button">Add Task</button>
+    <ul id="task-list"></ul>
+`;
+document.body.appendChild(taskSection);
+
+const taskInput = document.getElementById("task-input");
+const taskAddBtn = document.getElementById("task-add-btn");
+const taskList = document.getElementById("task-list");
+
+function addTask(text) {
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+    span.textContent = text;                 // textContent = safe
+    const del = document.createElement("button");
+    del.textContent = "Delete";
+    del.className = "delete-btn";
+    li.append(span, " ", del);
+    taskList.appendChild(li);
+}
+
+taskAddBtn.addEventListener("click", () => {
+    const text = taskInput.value.trim();
+    if (!text) return;
+    addTask(text);
+    taskInput.value = "";
+});
+
+// ONE listener on the parent ul handles toggle and delete
+taskList.addEventListener("click", function (event) {
+    const li = event.target.closest("li");
+    if (!li) return;
+    if (event.target.matches(".delete-btn")) {
+        li.remove();
+    } else {
+        li.classList.toggle("completed");
+    }
+});
+
+addTask("Learn the DOM");
+addTask("Practice events");
+
+// ===== Task 10.4: Form Handling =====
+const nameInput = document.getElementById("name");
+// contactForm and emailInput were already declared in Task 9.1
+
+nameInput.addEventListener("input", function (event) {
+    const value = event.target.value;
+    if (value.length < 2) {
+        showError(nameInput, "Name must be at least 2 characters");
+    } else {
+        clearError(nameInput);
+    }
+});
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+emailInput.addEventListener("input", function (event) {
+    const value = event.target.value;
+    if (!emailRegex.test(value)) {
+        showError(emailInput, "Please enter a valid email address");
+    } else {
+        clearError(emailInput);
+    }
+});
+
+contactForm.addEventListener("submit", function (event) {
+    event.preventDefault();                  // stop the page reload
+
+    const formData = new FormData(contactForm);
+    const data = Object.fromEntries(formData);
+    console.log("Form data:", data);
+
+    if (isValid(data)) {
+        showSuccess("Form submitted successfully!");
+        contactForm.reset();
+    } else {
+        if (data.name.length < 2) showError(nameInput, "Name must be at least 2 characters");
+        if (!emailRegex.test(data.email)) showError(emailInput, "Please enter a valid email address");
+    }
+});
+
+function isValid(data) {
+    return data.name.trim().length >= 2 && emailRegex.test(data.email);
+}
+
+function showError(input, message) {
+    input.classList.add("error");
+    let msg = input.nextElementSibling;
+    if (!msg || !msg.classList.contains("error-message")) {
+        msg = document.createElement("span");
+        msg.className = "error-message";
+        input.after(msg);
+    }
+    msg.textContent = message;
+}
+
+function clearError(input) {
+    input.classList.remove("error");
+    const msg = input.nextElementSibling;
+    if (msg && msg.classList.contains("error-message")) {
+        msg.remove();
+    }
+}
+
+function showSuccess(message) {
+    let msg = document.querySelector(".success-message");
+    if (!msg) {
+        msg = document.createElement("p");
+        msg.className = "success-message";
+        contactForm.after(msg);
+    }
+    msg.textContent = message;
+}
